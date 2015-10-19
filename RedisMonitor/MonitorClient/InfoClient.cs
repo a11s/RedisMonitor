@@ -15,6 +15,8 @@ namespace MonitorClient
     }
     public class InfoClient
     {
+        public const int minsleepinterval = 100;
+        public DateTime lastsleeptime;
         #region field
 
         TcpClient socket;
@@ -130,8 +132,9 @@ namespace MonitorClient
             {
                 while (Running)
                 {
+
                     Update();
-                    Thread.Sleep(_interval);
+                    Thread.Sleep(minsleepinterval);
                     //break;
                 }
             }
@@ -140,6 +143,14 @@ namespace MonitorClient
 
         public async void Update()
         {
+            if (DateTime.Now.Subtract(lastsleeptime).TotalMilliseconds > _interval)
+            {
+                lastsleeptime = DateTime.Now;
+            }
+            else
+            {
+                return;
+            }
             int numberOfBytesRead = 0;
 
             if (stream.CanWrite)
@@ -193,31 +204,34 @@ namespace MonitorClient
         private void DispatchParagraph(string p)
         {
             Dictionary<string, Dictionary<string, string>> AllParagraph = new Dictionary<string, Dictionary<string, string>>();
-            System.IO.StringReader sr = new System.IO.StringReader(p);
-            var s = sr.ReadLine();
-            var currentParagraphKey = "";
-            while (s != null)
+            using (System.IO.StringReader sr = new System.IO.StringReader(p))
             {
-                if (s.StartsWith("#"))
+
+                var s = sr.ReadLine();
+                var currentParagraphKey = "";
+                while (s != null)
                 {
-                    if (AllParagraph.ContainsKey(s))
+                    if (s.StartsWith("#"))
                     {
-                        currentParagraphKey = s;
+                        if (AllParagraph.ContainsKey(s))
+                        {
+                            currentParagraphKey = s;
+                        }
+                        else
+                        {
+                            AllParagraph[s] = new Dictionary<string, string>();
+                            currentParagraphKey = s;
+                        }
                     }
                     else
                     {
-                        AllParagraph[s] = new Dictionary<string, string>();
-                        currentParagraphKey = s;
+                        //get subitems
+
+                        SplitSubItems(AllParagraph, s, currentParagraphKey);
+
                     }
+                    s = sr.ReadLine();
                 }
-                else
-                {
-                    //get subitems
-
-                    SplitSubItems(AllParagraph, s, currentParagraphKey);
-
-                }
-                s = sr.ReadLine();
             }
             if (DataChanged != null)
             {

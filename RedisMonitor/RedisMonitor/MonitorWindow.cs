@@ -26,7 +26,7 @@ namespace RedisMonitor
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
-        {
+        {            
             client = new MonitorClient.InfoClient(textBox1.Text, (s) => Console.WriteLine(s), 4096, 0);
             client.DataChanged += client_DataChanged;
 
@@ -71,6 +71,21 @@ namespace RedisMonitor
 
         void client_DataChanged(object sender, MonitorClient.DataChangedEventArgs e)
         {
+            if (testdata == true)
+            {
+                //testdata = false;
+                try
+                {
+                    RedisPerformanceCounter.PCHelper.CheckPCCategory(e.Data);
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+            }
             var a = new Action(() =>
             {
                 prepairListBox(e);
@@ -199,6 +214,7 @@ namespace RedisMonitor
             timer1.Enabled = true;
 
         }
+        bool testdata = false;
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -251,6 +267,111 @@ namespace RedisMonitor
         private void MonitorWindow_Load(object sender, EventArgs e)
         {
             timer1.Interval = (int)numericUpDown2.Value * 1000;
+#if DEBUG
+            button2.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+#endif
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var t = @"# Server
+redis_version:2.8.12
+redis_git_sha1:00000000
+redis_git_dirty:0
+redis_build_id:ff040dde4a39b4ff
+redis_mode:standalone
+os:Windows  
+arch_bits:64
+multiplexing_api:winsock_IOCP
+gcc_version:0.0.0
+process_id:1336
+run_id:72273425c7dbf8b90c14eb92eea39cd2b07a8883
+tcp_port:6379
+uptime_in_seconds:200574
+uptime_in_days:2
+hz:10
+lru_clock:2149769
+config_file:
+
+# Clients
+connected_clients:1
+client_longest_output_list:0
+client_biggest_input_buf:0
+blocked_clients:0
+
+# Memory
+used_memory:4360672
+used_memory_human:4.16M
+used_memory_rss:4327072
+used_memory_peak:4443128
+used_memory_peak_human:4.24M
+used_memory_lua:33792
+mem_fragmentation_ratio:0.99
+mem_allocator:dlmalloc-2.8
+
+# Persistence
+loading:0
+rdb_changes_since_last_save:0
+rdb_bgsave_in_progress:0
+rdb_last_save_time:1444808298
+rdb_last_bgsave_status:ok
+rdb_last_bgsave_time_sec:1444808299
+rdb_current_bgsave_time_sec:-1
+aof_enabled:0
+aof_rewrite_in_progress:0
+aof_rewrite_scheduled:0
+aof_last_rewrite_time_sec:-1
+aof_current_rewrite_time_sec:-1
+aof_last_bgrewrite_status:ok
+aof_last_write_status:ok
+
+# Stats
+total_connections_received:4
+total_commands_processed:1767
+instantaneous_ops_per_sec:0
+rejected_connections:0
+sync_full:0
+sync_partial_ok:0
+sync_partial_err:0
+expired_keys:3
+evicted_keys:0
+keyspace_hits:3
+keyspace_misses:0
+pubsub_channels:0
+pubsub_patterns:0
+latest_fork_usec:0
+
+# Replication
+role:master
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+
+# CPU
+used_cpu_sys:4.38
+used_cpu_user:9.66
+used_cpu_sys_children:0.00
+used_cpu_user_children:0.00
+
+# Keyspace
+";
+            //RedisPerformanceCounter.PCHelper.CheckPCCategory();
+            RedisPerformanceCounter.PCHelper.RemovePCCategoryUNSAFE();
+        }
+
+        private void MonitorWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //RedisPerformanceCounter.PCHelper.CleanUp();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            testdata = true;
         }
         /// <summary>
         /// test chart
