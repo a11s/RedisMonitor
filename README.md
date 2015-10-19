@@ -24,4 +24,8 @@ mono或许可以使用，没有机会测试
 -r run as console application
 
 RedisPerformanceCounter -i
+![image](https://raw.githubusercontent.com/a11s/RedisMonitor/master/Screenshots/s1.png)
+
+![image](https://raw.githubusercontent.com/a11s/RedisMonitor/master/Screenshots/s2.png)
+
 
