@@ -2,7 +2,7 @@
 RedisMonitor on Windows by C#
 
 English:
-Monitor for Redis run on Windows.
+Monitor for Redis run on Windows. support windows service.
 
 中文:
 用c#写的一个运行在Windows平台上的监控应用程序
@@ -16,4 +16,12 @@ Monitor for Redis run on Windows.
 
 
 网上能找到的工具环境配置都太复杂了.因此自己搞个鼠标点下就能用的.
-下一步计划是封装成系统服务供MMC使用.
+mono或许可以使用，没有机会测试
+
+使用方法
+-i install
+-u uninstall
+-r run as console application
+
+RedisPerformanceCounter -i
+
